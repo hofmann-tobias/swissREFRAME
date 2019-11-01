@@ -12,7 +12,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/adal02/swissREFRAME',
-    # download_url='https://github.com/adal02/PyREFRAME/archive/V1.0.0.dev0.tar.gz',
+    download_url='https://github.com/adal02/swissREFRAME/archive/V1.0.0.tar.gz',
     install_requires=['comtypes'],
     packages=setuptools.find_packages(),
     include_package_data=True,
