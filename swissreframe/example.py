@@ -1,4 +1,4 @@
-from pyreframe import REFRAME
+from swissreframe import REFRAME
 
 r = REFRAME()
 # or specify path to swisstopoReframeLib.tlb
