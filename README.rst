@@ -36,6 +36,8 @@ Requirements
 * comtypes (tested with V1.1.7)
 * Python 3 (tested with 3.7.5)
 
+
+
 Example
 ^^^^^^^
 .. code-block:: python
@@ -68,3 +70,9 @@ Output:
     [2600000.0, 1200000.0, 300.0, 1, 'Computation successfully executed: the coordinates passed by reference have been updated with the new output values']
     [7.438632420871814, 46.9510827728495, 49.6221914421767, 1, 'Computation successfully executed: the coordinates passed by reference have been updated with the new output values']
 
+
+Documentation
+^^^^^^^^^^^^^
+.. code-block::
+
+    Help on class REFRAME in module swissreframe.main:
