@@ -1,3 +1,6 @@
+This is a prototype!
+
+
 swissREFRAME
 ============
 Python interface for the official swisstopo's REFRAME DLL (currently only suited for Windows)
