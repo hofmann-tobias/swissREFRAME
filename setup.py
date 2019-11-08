@@ -1,16 +1,16 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name='swissREFRAME',
-    version='1.0.0',
+    version='0.1.0',
     author='adal02',
     author_email='hofmann.tobias121@gmail.com',
     description="Interface for the official swisstopo's REFRAME DLL",
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     url='https://github.com/adal02/swissREFRAME',
     download_url='https://github.com/adal02/swissREFRAME/archive/V1.0.0.tar.gz',
     install_requires=['comtypes'],
