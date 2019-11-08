@@ -46,11 +46,18 @@ class REFRAME:
                                    'lv95_to_etrf93_geocentric': jProjectionChange.LV95ToETRF93Geocentric,
                                    'lv95_to_etrf93_geographic': jProjectionChange.LV95ToETRF93Geographic}
 
-    def compute_gpsref(self, coordinates: Union[Tuple[Union[float, int]], List[Union[float, int]]],
+    def compute_gpsref(self, coordinates: Union[Tuple[Union[float, int], Union[float, int], Union[float, int]],
+                                                List[Union[float, int]]],
                        transformation: str) -> tuple:
+        """
+
+        :param coordinates:
+        :param transformation:
+        :return:
+        """
         try:
             e_x_long, n_y_lati, h_z_h = float(coordinates[0]), float(coordinates[1]), float(coordinates[2])
-        except:
+        except ValueError:
             print('east/x/longitude, north/y/latitude and height/z/height must be float or convertible value')
         else:
             assert transformation in self.projection_changes, 'transformation has to be in: {}'.format(
@@ -64,19 +71,29 @@ class REFRAME:
             except jpype.java.lang.Exception as ex:
                 print(ex.stacktrace())
 
-    def compute_reframe(self, coordinates: Union[Tuple[Union[float, int]], List[Union[float, int]]],
+    def compute_reframe(self, coordinates: Union[Tuple[Union[float, int], Union[float, int], Union[float, int]],
+                                                 List[Union[float, int]]],
                         from_planimetric_frame: str, to_planimetric_frame: str,
                         from_altimetric_frame: str, to_altimetric_frame: str) -> tuple:
+        """
+
+        :param coordinates:
+        :param from_planimetric_frame:
+        :param to_planimetric_frame:
+        :param from_altimetric_frame:
+        :param to_altimetric_frame:
+        :return:
+        """
 
         try:
             east, north, height = float(coordinates[0]), float(coordinates[1]), float(coordinates[2])
-        except:
+        except ValueError:
             print('east, north and height must be float or convertible value')
         else:
             assert from_planimetric_frame in self.planimetric_frames, 'from_planimetric_frame has to be in: {}'.format(
-                list(self.altimetric_frames.keys()))
+                list(self.planimetric_frames.keys()))
             assert to_planimetric_frame in self.planimetric_frames, 'to_planimetric_frame has to be in: {}'.format(
-                list(self.altimetric_frames.keys()))
+                list(self.planimetric_frames.keys()))
             assert from_altimetric_frame in self.altimetric_frames, 'from_altimetric_frame has to be in: {}'.format(
                 list(self.altimetric_frames.keys()))
             assert to_altimetric_frame in self.altimetric_frames, 'to_altimetric_frame has to be in: {}'.format(
@@ -88,7 +105,8 @@ class REFRAME:
                                              self.planimetric_frames[to_planimetric_frame],
                                              self.altimetric_frames[from_altimetric_frame],
                                              self.altimetric_frames[to_altimetric_frame],
-                                             )
+                                             ),
+
                 )
             except jpype.java.lang.Exception as ex:
                 print(ex.stacktrace())
@@ -98,190 +116,209 @@ class Coordinate:
 
     def __init__(self, **kwargs):
 
+        self.planimetric_frames = list(global_variables.r.planimetric_frames.keys())
+        self.altimetric_frames = list(global_variables.r.altimetric_frames.keys())
+        self.world_formats = ['geocentric', 'gepgraphic']
+
         if len(kwargs) != 0:
             if 'type' in kwargs:
                 if kwargs['type'] == 'plane':
                     if 'planimetric_frame' in kwargs and 'altimetric_frame' in kwargs:
-                        self._type = 'plane'
                         if kwargs['planimetric_frame'] == 'lv95' and kwargs['altimetric_frame'] == 'ln02':
                             self.lv95_ln02 = kwargs['coordinates']
                         elif kwargs['planimetric_frame'] == 'lv95' and kwargs['altimetric_frame'] == 'lhn95':
                             self.lv95_lhn95 = kwargs['coordinates']
-                        elif kwargs['planimetric_frame'] == 'lv95' and kwargs['altimetric_frame'] == 'bessel1841':
-                            self.lv95_bessel1841 = kwargs['coordinates']
-                        elif kwargs['planimetric_frame'] == 'lv03' and kwargs['altimetric_frame'] == 'ln02':
-                            self.lv03_ln02 = kwargs['coordinates']
-                        elif kwargs['planimetric_frame'] == 'lv03' and kwargs['altimetric_frame'] == 'lhn95':
-                            self.lv03_lhn95 = kwargs['coordinates']
-                        elif kwargs['planimetric_frame'] == 'lv03' and kwargs['altimetric_frame'] == 'bessel1841':
-                            self.lv03_bessel1841 = kwargs['coordinates']
+                        elif kwargs['planimetric_frame'] == 'lv95' and kwargs['altimetric_frame'] == 'ellipsoid':
+                            self.lv95_ellipsoid = kwargs['coordinates']
+                        elif kwargs['planimetric_frame'] == 'lv03_military' and kwargs['altimetric_frame'] == 'ln02':
+                            self.lv03_military_ln02 = kwargs['coordinates']
+                        elif kwargs['planimetric_frame'] == 'lv03_military' and kwargs['altimetric_frame'] == 'lhn95':
+                            self.lv03_military_lhn95 = kwargs['coordinates']
+                        elif kwargs['planimetric_frame'] == 'lv03_military' and kwargs[
+                            'altimetric_frame'] == 'ellipsoid':
+                            self.lv03_military_ellipsoid = kwargs['coordinates']
                         else:
 
-                            if kwargs['planimetric_frame'] not in list_plan_frames:
+                            if kwargs['planimetric_frame'] not in self.planimetric_frames:
                                 raise ValueError(
                                     'Unknown planimetric frame {}. '
                                     'Choice a planimetric frame from following list: {} '.format(
-                                        kwargs['planimetric_frame'], list_plan_frames))
-                            if kwargs['altimetric_frame'] not in list_plan_frames:
+                                        kwargs['planimetric_frame'], self.planimetric_frames))
+                            if kwargs['altimetric_frame'] not in self.altimetric_frames:
                                 raise ValueError(
                                     'Unknown altimetric frame {}. '
                                     'Choice a altimetric frame from following list: {} '.format(
-                                        kwargs['altimetric_frame'], list_alti_frames))
+                                        kwargs['altimetric_frame'], self.altimetric_frames))
 
                     else:
                         raise KeyError('You have to specify planimetric and altimetric frame!')
 
                 elif kwargs['type'] == 'world':
                     if 'format' in kwargs:
-                        self._type = 'world'
                         if kwargs['format'] == 'geocentric':
-                            self.CHTRF95_geozentric = kwargs['coordinates']
+                            self.ETRFF95_geozentric = kwargs['coordinates']
                         elif kwargs['format'] == 'geographic':
-                            self.CHTRF95_geographic = kwargs['coordinates']
+                            self.ETRF95_geographic = kwargs['coordinates']
                         else:
                             raise ValueError('Unknown coordinate format {}.'
                                              'Choice coordinate format from following list: {}'.format(kwargs['format'],
-                                                                                                       list_world_formats))
+                                                                                                       self.world_formats))
                     else:
                         raise KeyError('You have to specify coordinate format! Choice from following list: {}'.format(
-                            list_world_formats))
+                            self.world_formats))
                 else:
                     raise ValueError('type has to be "world" or "plane"')
 
-    def _reframe(self, plan_frame_out, alti_frame_out):
+    def __str__(self):
+        return '<Coordinate{}>'.format(self._coordinates)
 
-        if plan_frame_out in list_plan_frames and alti_frame_out in list_alti_frames:
-            return global_variables.r.compute_reframe(self._coord[0], self._coord[1], self._coord[2],
-                                                      self._plan_frame, list_plan_frames.index(plan_frame_out),
-                                                      self._alt_frame, list_alti_frames.index(alti_frame_out))
+    def __repr__(self):
+        return self._coordinates
+
+    def _transform(self, to_type: str, **kwargs):
+        if to_type == 'plane' and self._type == 'plane':
+            assert 'to_planimetric_frame' in kwargs and 'to_altimetric_frame' in kwargs
+            return global_variables.r.compute_reframe(self._coordinates,
+                                                      from_planimetric_frame=self._plan_frame,
+                                                      to_planimetric_frame=kwargs['to_planimetric_frame'],
+                                                      from_altimetric_frame=self._alt_frame,
+                                                      to_altimetric_frame=kwargs['to_altimetric_frame']
+                                                      )
+        elif to_type == 'world' and self._type == 'plane':
+            coord_lv95_ellipsoid = self.lv95_ellipsoid
+            assert 'to_world_format' in kwargs
+            if kwargs['to_world_format'] == 'geocentric':
+                return global_variables.r.compute_gpsref(coord_lv95_ellipsoid, 'lv95_to_etrf93_geocentric')
+            elif kwargs['to_world_format'] == 'geographic':
+                return global_variables.r.compute_gpsref(coord_lv95_ellipsoid, 'lv95_to_etrf93_geographic')
+
+        elif to_type == 'plane' and self._type == 'world':
+            coord_lv95_ellipsoid = self.lv95_ellipsoid
+            assert 'to_planimetric_frame' in kwargs and 'to_altimetric_frame' in kwargs
+            return global_variables.r.compute_reframe(coord_lv95_ellipsoid,
+                                                      from_planimetric_frame='lv95',
+                                                      to_planimetric_frame=kwargs['to_planimetric_frame'],
+                                                      from_altimetric_frame='ellipsoid',
+                                                      to_altimetric_frame=kwargs['to_altimetric_frame']
+                                                      )
+        elif to_type == 'world' and self._type == 'world':
+            coord_lv95_ellipsoid = self.lv95_ellipsoid
+            assert 'to_world_format' in kwargs
+            if kwargs['world_format'] == 'geocentric':
+                return global_variables.r.compute_gpsref(coord_lv95_ellipsoid, 'lv95_to_etrf93_geocentric')
+            elif kwargs['world_format'] == 'geographic':
+                return global_variables.r.compute_gpsref(coord_lv95_ellipsoid, 'lv95_to_etrf93_geographic')
+
         else:
-            print('output frames not vaid')
-
-    def _gpsref(self, type_out, world_format):
-
-        if type_out == 'world':
-            coord_lv95_bessel1841 = self.lv95_bessel1841
-            if world_format == 'geocentric':
-                return global_variables.r.compute_gpsref(coord_lv95_bessel1841[0], coord_lv95_bessel1841[1],
-                                                         coord_lv95_bessel1841[2], 2)
-            elif world_format == 'geographic':
-                coord_world = global_variables.r.compute_gpsref(coord_lv95_bessel1841[0], coord_lv95_bessel1841[1],
-                                                                coord_lv95_bessel1841[2], 3)
-                return coord_world
-
-        if type_out == 'plane':
-            if world_format == 'geocentric':
-                coord_geozentric = self.CHTRF95_geozentric
-                return global_variables.r.compute_gpsref(coord_geozentric[0], coord_geozentric[1],
-                                                         coord_geozentric[2], 0)
-            elif world_format in list_world_formats:
-                if world_format == 'geographic':
-                    coord_geographic = self.CHTRF95_geographic
-                    return global_variables.r.compute_gpsref(coord_geographic[0], coord_geographic[1],
-                                                             coord_geographic[2], 1)
-
-    def _return_coordinates(self, input):
-        return input
+            raise NotImplementedError('Unexpected arguments on method Coordinate._transform')
 
     @property
     def lv95_lhn95(self):
-        if self._type == 'plane':
-            output = self._reframe('lv95', 'lhn95')
-        elif self._type == 'world':
-            coord_lv95_bessel1841 = self._gpsref('plane', self._world_format)[0, 2]
-            print(coord_lv95_bessel1841)
-        return self._return_coordinates(output)
+        if self._type == 'plane' and self._plan_frame == 'lv95' and self._alt_frame == 'lhn95':
+            return self._coordinates
+        else:
+            return self._transform(to_type='plane', to_planimetric_frame='lv95', to_altimetric_frame='lhn95')
 
     @lv95_lhn95.setter
-    def lv95_lhn95(self, coord: tuple):
-        self._plan_frame = list_plan_frames.index('lv95')
-        self._alt_frame = list_alti_frames.index('lhn95')
-        self._coord = coord
+    def lv95_lhn95(self, coordinates: tuple):
+        self._type = 'plane'
+        self._plan_frame = 'lv95'
+        self._alt_frame = 'lhn95'
+        self._coordinates = coordinates
 
     @property
     def lv95_ln02(self):
-        if self._type == 'plane':
-            output = self._reframe('lv95', 'ln02')
-        elif self._type == 'world':
-            output = None
-        return self._return_coordinates(output)
+        if self._type == 'plane' and self._plan_frame == 'lv95' and self._alt_frame == 'ln02':
+            return self._coordinates
+        else:
+            return self._transform(to_type='plane', to_planimetric_frame='lv95', to_altimetric_frame='ln02')
 
     @lv95_ln02.setter
-    def lv95_ln02(self, coord: tuple):
-        self._plan_frame = list_plan_frames.index('lv95')
-        self._alt_frame = list_alti_frames.index('ln02')
-        self._coord = coord
+    def lv95_ln02(self, coordinates: tuple):
+        self._type = 'plane'
+        self._plan_frame = 'lv95'
+        self._alt_frame = 'ln02'
+        self._coordinates = coordinates
 
     @property
-    def lv95_bessel1841(self):
-        if self._type == 'plane':
-            output = self._reframe('lv95', 'bessel1841')
-        elif self._type == 'world':
-            output = None
-        return self._return_coordinates(output)
+    def lv95_ellipsoid(self):
+        if self._type == 'plane' and self._plan_frame == 'lv95' and self._alt_frame == 'ellipsoid':
+            return self._coordinates
+        else:
+            return self._transform(to_type='plane', to_planimetric_frame='lv95', to_altimetric_frame='ellipsoid')
 
-    @lv95_bessel1841.setter
-    def lv95_bessel1841(self, coord: tuple):
-        self._plan_frame = list_plan_frames.index('lv95')
-        self._alt_frame = list_alti_frames.index('bessel1841')
-        self._coord = coord
-
-    @property
-    def lv03_ln02(self):
-        if self._type == 'plane':
-            output = self._reframe('lv03', 'ln02')
-        elif self._type == 'world':
-            output = None
-        return self._return_coordinates(output)
-
-    @lv03_ln02.setter
-    def lv03_ln02(self, coord: tuple):
-        self._plan_frame = list_plan_frames.index('lv03')
-        self._alt_frame = list_alti_frames.index('ln02')
-        self._coord = coord
+    @lv95_ellipsoid.setter
+    def lv95_ellipsoid(self, coordinates: tuple):
+        self._type = 'plane'
+        self._plan_frame = 'lv95'
+        self._alt_frame = 'ellipsoid'
+        self._coordinates = coordinates
 
     @property
-    def lv03_lhn95(self):
-        if self._type == 'plane':
-            output = self._reframe('lv03', 'lhn95')
-        elif self._type == 'world':
-            output = None
-        return self._return_coordinates(output)
+    def lv03_military_ln02(self):
+        if self._type == 'plane' and self._plan_frame == 'lv03_military' and self._alt_frame == 'ln02':
+            return self._coordinates
+        else:
+            return self._transform(to_type='plane', to_planimetric_frame='lv03_military', to_altimetric_frame='ln02')
 
-    @lv03_lhn95.setter
-    def lv03_lhn95(self, coord: tuple):
-        self._plan_frame = list_plan_frames.index('lv03')
-        self._alt_frame = list_alti_frames.index('lhn95')
-        self._coord = coord
-
-    @property
-    def lv03_bessel1841(self):
-        if self._type == 'plane':
-            output = self._reframe('lv03', 'bessel1841')
-        elif self._type == 'world':
-            output = None
-        return self._return_coordinates(output)
-
-    @lv03_bessel1841.setter
-    def lv03_bessel1841(self, coord: tuple):
-        self._plan_frame = list_plan_frames.index('lv03')
-        self._alt_frame = list_alti_frames.index('bessel1841')
-        self._coord = coord
+    @lv03_military_ln02.setter
+    def lv03_military_ln02(self, coordinates: tuple):
+        self._type = 'plane'
+        self._plan_frame = 'lv03_military'
+        self._alt_frame = 'ln02'
+        self._coordinates = coordinates
 
     @property
-    def CHTRF95_geozentric(self):
-        return self._gpsref('world', 'geocentric')
+    def lv03_military_lhn95(self):
+        if self._type == 'plane' and self._plan_frame == 'lv03_military' and self._alt_frame == 'lhn95':
+            return self._coordinates
+        else:
+            return self._transform(to_type='plane', to_planimetric_frame='lv03_military', to_altimetric_frame='lhn95')
 
-    @CHTRF95_geozentric.setter
-    def CHTRF95_geozentric(self, coord):
+    @lv03_military_lhn95.setter
+    def lv03_military_lhn95(self, coordinates: tuple):
+        self._type = 'plane'
+        self._plan_frame = 'lv03_military'
+        self._alt_frame = 'lhn95'
+        self._coordinates = coordinates
+
+    @property
+    def lv03_military_ellipsoid(self):
+        if self._type == 'plane' and self._plan_frame == 'lv03_military' and self._alt_frame == 'ellipsoid':
+            return self._coordinates
+        else:
+            return self._transform(to_type='plane', to_planimetric_frame='lv03_military',
+                                   to_altimetric_frame='ellipsoid')
+
+    @lv03_military_ellipsoid.setter
+    def lv03_military_ellipsoid(self, coordinates: tuple):
+        self._type = 'plane'
+        self._plan_frame = 'lv03_military'
+        self._alt_frame = 'ellipsoid'
+        self._coordinates = coordinates
+
+    @property
+    def ETRFF95_geozentric(self):
+        if self._type == 'world' and self._world_format == 'geocentric':
+            return self._coordinates
+        else:
+            return self._transform(to_type='world', to_world_format='geocentric')
+
+    @ETRFF95_geozentric.setter
+    def ETRFF95_geozentric(self, coordinates):
+        self._type = 'world'
         self._world_format = 'geocentric'
-        self._coord = coord
+        self._coordinates = coordinates
 
     @property
-    def CHTRF95_geographic(self):
-        return self._gpsref('world', 'geographic')
+    def ETRF95_geographic(self):
+        if self._type == 'world' and self._world_format == 'geographic':
+            return self._coordinates
+        else:
+            return self._transform(to_type='world', to_world_format='geographic')
 
-    @CHTRF95_geographic.setter
-    def CHTRF95_geographic(self, coord):
+    @ETRF95_geographic.setter
+    def ETRF95_geographic(self, coordinates):
+        self._type = 'world'
         self._world_format = 'geographic'
-        self._coord = coord
+        self._coordinates = coordinates
