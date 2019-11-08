@@ -1,6 +1,3 @@
-This is a prototype!
-
-
 swissREFRAME
 ============
 Python interface for the official swisstopo's REFRAME jar library
@@ -19,12 +16,13 @@ GeoSuite calculation module for planimetric and/or height transformation for app
 The REFRAME library may be distributed to third parties and integrated into commercial products, but it must be delivered to the customer free of charge.
 
 ``ReframeLibrary/Documentation/developper_manual.pdf`` contains all technical information about REFRAME library.
+``ReframeLibrary/Documentation/refsys_d.pdf`` contains information and formulas about transformations and projection
 
 Installation
 ^^^^^^^^^^^^
 Just install the package:
 
-.. code-block:: sh
+.. code-block:: shell
 
     pip install swissreframe
 
@@ -54,7 +52,7 @@ and also path to ``jvm.dll``:
 
 .. code-block:: python
 
-    global_variables.r = REFRAME(path_reframeLib_jar = r'C:\Program Files\Java\jre1.8.0_231\bin\server\jvm.dll')
+    global_variables.r = REFRAME(path_jvm_dll = r'C:\Program Files\Java\jre1.8.0_231\bin\server\jvm.dll')
 
 
 Now you can use the methods ``REFRAME.compute_reframe`` and ``REFRAME.compute_gpsref``
