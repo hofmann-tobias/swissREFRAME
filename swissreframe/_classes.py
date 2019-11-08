@@ -193,7 +193,10 @@ class Coordinate:
                 return global_variables.r.compute_gpsref(coord_lv95_ellipsoid, 'lv95_to_etrf93_geographic')
 
         elif to_type == 'plane' and self._type == 'world':
-            coord_lv95_ellipsoid = self.lv95_ellipsoid
+            if self._world_format == 'geocentric':
+                coord_lv95_ellipsoid = global_variables.r.compute_gpsref(self._coordinates, 'etrf93_geocentric_to_lv95')
+            elif self._world_format == 'geographic':
+                coord_lv95_ellipsoid = global_variables.r.compute_gpsref(self._coordinates, 'etrf93_geographic_to_lv95')
             assert 'to_planimetric_frame' in kwargs and 'to_altimetric_frame' in kwargs
             return global_variables.r.compute_reframe(coord_lv95_ellipsoid,
                                                       from_planimetric_frame='lv95',
