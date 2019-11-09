@@ -1,1 +1,1 @@
-from ._classes import REFRAME, Coordinate, global_variables
+from ._main import REFRAME, Coordinate, global_variables
