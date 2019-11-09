@@ -16,6 +16,7 @@ GeoSuite calculation module for planimetric and/or height transformation for app
 The REFRAME library may be distributed to third parties and integrated into commercial products, but it must be delivered to the customer free of charge.
 
 ``ReframeLibrary/Documentation/developper_manual.pdf`` contains all technical information about REFRAME library.
+
 ``ReframeLibrary/Documentation/refsys_d.pdf`` contains information and formulas about transformations and projection
 
 Installation
@@ -61,7 +62,7 @@ Now you can use the methods ``REFRAME.compute_reframe`` and ``REFRAME.compute_gp
 
     result1 = global_variables.r.compute_reframe((600000.1, 200000.1, 200), 'lv03_military', 'lv95', 'ln02', 'lhn95')
     print(result1)
-    result2 = r.compute_gpsref((2600000.1, 1200000.1, 200), 'lv95_to_etrf93_geographic')
+    result2 = global_variables.r.compute_gpsref((2600000.1, 1200000.1, 200), 'lv95_to_etrf93_geographic')
     print(result2)
 
 Output:
@@ -77,14 +78,13 @@ Or you can use class Coordinate and its methods:
 
     coord = Coordinate(type='plane', planimetric_frame='lv03_military', altimetric_frame='ln02',
                        coordinates=(600000.1, 200000.1, 200.1))
-    print(coord.ETRFF95_geozentric)
+    print(coord.ETRFF95_geocentric)
 
 Output:
 
 .. code-block:: python
 
     (4325124.392962725, 564701.4910050733, 4638236.373010437)
-
 
 Documentation
 ^^^^^^^^^^^^^

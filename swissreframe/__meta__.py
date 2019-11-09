@@ -1,6 +1,6 @@
 __title__ = "swissREFRAME"
 __description__ = "Python interface for the official swisstopo's REFRAME jar library"
-__url__ = "https://pyverm.readthedocs.io/en/latest/"
+__url__ = "https://github.com/adal02/swissREFRAME"
 __version__ = "1.1.0"
 __release__ = __version__ + ""
 __author__ = 'Tobias Hofmann'
