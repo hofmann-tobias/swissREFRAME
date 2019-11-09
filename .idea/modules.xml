@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/PyREFRAME.iml" filepath="$PROJECT_DIR$/.idea/PyREFRAME.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/swissREFRAME.iml" filepath="$PROJECT_DIR$/.idea/swissREFRAME.iml" />
     </modules>
   </component>
 </project>
