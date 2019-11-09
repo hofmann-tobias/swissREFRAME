@@ -1,0 +1,10 @@
+__title__ = "swissREFRAME"
+__description__ = "Python interface for the official swisstopo's REFRAME jar library"
+__url__ = "https://pyverm.readthedocs.io/en/latest/"
+__version__ = "1.1.0"
+__release__ = __version__ + ""
+__author__ = 'Tobias Hofmann'
+__author_email__ = 'hofmann.tobias121@gmail.com'
+__license__ = 'MIT'
+__copyright__ = 'Copyright (c) 2019 Tobias Hofmann'
+__download_url__ = 'https://github.com/adal02/swissREFRAME/archive/V{}.tar.gz'.format(__release__)

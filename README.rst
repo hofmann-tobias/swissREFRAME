@@ -35,7 +35,7 @@ Requirements
 
 
 Example / Usage
-^^^^^^^
+^^^^^^^^^^^^^^^
 .. code-block:: python
 
     from swissreframe import REFRAME, Coordinate, global_variables

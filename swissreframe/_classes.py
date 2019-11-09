@@ -1,6 +1,7 @@
 from typing import Union, Tuple, List
 
-import jpype
+import jpype, os
+from time import sleep
 
 
 class Box:
@@ -11,6 +12,11 @@ global_variables = Box()
 global_variables.r = None
 
 
+def _get_path(relative_path):
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
+
+
 class REFRAME:
     def __init__(self, path_reframeLib_jar: str = r'jar/reframeLib.jar', path_jvm_dll: str = r''):
 
@@ -18,15 +24,15 @@ class REFRAME:
         self._path_jvm = path_jvm_dll
         self._lib = None
 
-        jpype.addClassPath(self._path_lib)
+        jpype.addClassPath(_get_path(self._path_lib))
 
-        if self._path_jvm == '':
-            jpype.startJVM(convertStrings=False)
-        else:
-            jpype.startJVM(self._path_jvm, convertStrings=False)
+        if self._path_jvm == '' and not jpype.isJVMStarted():
+            jpype.startJVM(jpype.getDefaultJVMPath(), "-ea", convertStrings=False)
+        elif not jpype.isJVMStarted():
+            jpype.startJVM(self._path_jvm, "-ea", convertStrings=False)
 
         javaPackage = jpype.JPackage('com.swisstopo.geodesy.reframe_lib')
-        jReframe = javaPackage.Reframe
+        jReframe = jpype.JClass('com.swisstopo.geodesy.reframe_lib.Reframe')
         jPlanimetricFrame = javaPackage.IReframe.PlanimetricFrame
         jAltimetricFrame = javaPackage.IReframe.AltimetricFrame
         jProjectionChange = javaPackage.IReframe.ProjectionChange
