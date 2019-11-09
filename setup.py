@@ -1,4 +1,5 @@
 import setuptools
+
 from swissreframe import __meta__ as meta
 
 with open("README.rst", "r") as fh:
@@ -15,7 +16,7 @@ setuptools.setup(
     url=meta.__url__,
     download_url=meta.__download_url__,
     install_requires=['JPype1'],
-    packages=setuptools.find_packages(),
+    packages=['swissreframe'],
     include_package_data=True,
     keywords=["geodesy", "geography", "swiss", "coordinates", "transformation"],
     classifiers=[
