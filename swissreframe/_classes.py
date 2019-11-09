@@ -162,7 +162,7 @@ class Coordinate:
                 elif kwargs['type'] == 'world':
                     if 'format' in kwargs:
                         if kwargs['format'] == 'geocentric':
-                            self.ETRFF95_geocentric = kwargs['coordinates']
+                            self.ETRF95_geocentric = kwargs['coordinates']
                         elif kwargs['format'] == 'geographic':
                             self.ETRF95_geographic = kwargs['coordinates']
                         else:
@@ -307,14 +307,14 @@ class Coordinate:
         self._coordinates = coordinates
 
     @property
-    def ETRFF95_geocentric(self):
+    def ETRF95_geocentric(self):
         if self._type == 'world' and self._world_format == 'geocentric':
             return self._coordinates
         else:
             return self._transform(to_type='world', to_world_format='geocentric')
 
-    @ETRFF95_geocentric.setter
-    def ETRFF95_geocentric(self, coordinates):
+    @ETRF95_geocentric.setter
+    def ETRF95_geocentric(self, coordinates):
         self._type = 'world'
         self._world_format = 'geocentric'
         self._coordinates = coordinates

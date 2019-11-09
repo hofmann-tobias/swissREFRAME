@@ -16,6 +16,6 @@ print(coord.lv03_military_ln02)
 
 coord = Coordinate(type='plane', planimetric_frame='lv03_military', altimetric_frame='ln02',
                    coordinates=(600000.1, 200000.1, 200.1))
-print(coord.ETRFF95_geocentric)
+print(coord.ETRF95_geocentric)
 
 shutdownJVM()
