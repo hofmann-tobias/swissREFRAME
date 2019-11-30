@@ -1,8 +1,8 @@
-from swissreframe import REFRAME, Coordinate, global_variables
+from swissreframe import Coordinate, initialize_reframe
 from jpype import shutdownJVM
 
-global_variables.r = REFRAME()
-r = global_variables.r
+
+r = initialize_reframe()
 
 print(r.planimetric_frames.keys(), r.altimetric_frames.keys(), r.projection_changes.keys())
 

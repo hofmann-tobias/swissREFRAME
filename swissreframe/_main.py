@@ -17,6 +17,12 @@ def _get_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+def initialize_reframe(path_reframeLib_jar: str = r'jar/reframeLib.jar', path_jvm_dll: str = r''):
+    r = REFRAME(path_reframeLib_jar, path_jvm_dll)
+    global_variables.r = r
+    return r
+
+
 class REFRAME:
     def __init__(self, path_reframeLib_jar: str = r'jar/reframeLib.jar', path_jvm_dll: str = r''):
 

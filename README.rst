@@ -39,30 +39,30 @@ Example / Usage
 ^^^^^^^^^^^^^^^
 .. code-block:: python
 
-    from swissreframe import REFRAME, Coordinate, global_variables
+    from swissreframe import Coordinate, initialize_reframe
 
-    global_variables.r = REFRAME()
+    r = initialize_reframe()
 
 This should work. But you can also specify path to ``reframeLib.jar``:
 
 .. code-block:: python
 
-    global_variables.r = REFRAME(path_reframeLib_jar = r'D:\jar\reframeLib.jar')
+    r = initialize_reframe(path_reframeLib_jar = r'D:\jar\reframeLib.jar')
 
 and also path to ``jvm.dll``:
 
 .. code-block:: python
 
-    global_variables.r = REFRAME(path_jvm_dll = r'C:\Program Files\Java\jre1.8.0_231\bin\server\jvm.dll')
+    r = initialize_reframe(path_jvm_dll = r'C:\Program Files\Java\jre1.8.0_231\bin\server\jvm.dll')
 
 
 Now you can use the methods ``REFRAME.compute_reframe`` and ``REFRAME.compute_gpsref``
 
 .. code-block:: python
 
-    result1 = global_variables.r.compute_reframe((600000.1, 200000.1, 200), 'lv03_military', 'lv95', 'ln02', 'lhn95')
+    result1 = r.compute_reframe((600000.1, 200000.1, 200), 'lv03_military', 'lv95', 'ln02', 'lhn95')
     print(result1)
-    result2 = global_variables.r.compute_gpsref((2600000.1, 1200000.1, 200), 'lv95_to_etrf93_geographic')
+    result2 = r.compute_gpsref((2600000.1, 1200000.1, 200), 'lv95_to_etrf93_geographic')
     print(result2)
 
 Output:

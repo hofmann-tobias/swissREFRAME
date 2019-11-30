@@ -1,7 +1,7 @@
 __title__ = "swissREFRAME"
 __description__ = "Python interface for the official swisstopo's REFRAME jar library"
 __url__ = "https://github.com/adal02/swissREFRAME"
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 __release__ = __version__ + ""
 __author__ = 'Tobias Hofmann'
 __author_email__ = 'hofmann.tobias121@gmail.com'
